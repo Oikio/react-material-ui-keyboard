@@ -4,7 +4,7 @@ import bind from 'bind-decorator';
 import Dialog from 'material-ui/Dialog';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { KeyboardKey, KeyboardKeyProps } from './KeyboardKey';
-import { KeyboardLayout, kyeboardCapsLockLayout } from './layouts';
+import { KeyboardLayout, keyboardCapsLockLayout } from './layouts';
 import { MuiTheme } from 'material-ui/styles';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import EventListenerService from 'event-listener-service';
@@ -21,7 +21,7 @@ export type InputHandler = (input: string) => void;
 export interface TextFieldRequiredProps {
     style?: React.CSSProperties;
     readOnly: boolean;
-    value: string; 
+    value: string;
     onFocus?: React.FocusEventHandler<string>;
 }
 
@@ -52,6 +52,10 @@ export interface KeyboardProps {
     correctorName?: string;
     corrector?: Function;
     disableEffects?: boolean;
+    // Sets layout to keyboard only
+    keyboardOnly?: boolean
+    // passes className to key component for custom styling
+    keyClassName?: string
 }
 
 export interface KeyboardState {
@@ -148,7 +152,7 @@ export class Keyboard extends React.Component<KeyboardProps, KeyboardState> {
         if(typeof this.props.onInputValueChange === constants.typeofFunction) {
             this.props.onInputValueChange!(this.state.value!);
         }
-    } 
+    }
 
     private setValue(value: string): void {
         if(this.state.value !== value) {
@@ -340,7 +344,7 @@ export class Keyboard extends React.Component<KeyboardProps, KeyboardState> {
 
     public render(): JSX.Element {
         const { props, state, context } = this;
-        const { textField, layouts, keyboardKeyHeight, keyboardKeyWidth, keyboardKeySymbolSize, automatic, correctorName, disableEffects } = props;
+        const {keyClassName, keyboardOnly, textField, layouts, keyboardKeyHeight, keyboardKeyWidth, keyboardKeySymbolSize, automatic, correctorName, disableEffects } = props;
         const { value, layout: stateLayout, capsLock } = state;
         const { muiTheme } = context;
         const open: boolean = automatic ? state.open! : (props.open ? constants.boolTrue : constants.boolFalse);
@@ -350,7 +354,7 @@ export class Keyboard extends React.Component<KeyboardProps, KeyboardState> {
         let inputTextFieldProps: TextFieldAccessedProps = objectAssign({}, textField.props, { readOnly: open });
         if(automatic || open) {
             inputTextFieldProps.onFocus = automatic ? this.onFocus : undefined;
-        } 
+        }
         keyboardFieldProps.style = objectAssign({}, styles);
         keyboardFieldProps.style.minWidth = constants.fullWidth;
         keyboardFieldProps.style.width = constants.fullWidth;
@@ -372,7 +376,7 @@ export class Keyboard extends React.Component<KeyboardProps, KeyboardState> {
         }
         const inputTextField: TextFieldElement = React.cloneElement(textField, inputTextFieldProps);
         const keyboardTextField: TextFieldElement = React.createElement(textField.type as CreatableTextField, keyboardFieldProps);
-        const keyboardLayout: KeyboardLayout = kyeboardCapsLockLayout(layouts[stateLayout!], capsLock!);
+        const keyboardLayout: KeyboardLayout = keyboardCapsLockLayout(layouts[stateLayout!], capsLock!);
         const keyboardRowLength: number = keyboardLayout.length;
         const keyboardRowLengths: Array<number> =  [];
         let rowIndex: number;
@@ -455,28 +459,33 @@ export class Keyboard extends React.Component<KeyboardProps, KeyboardState> {
                         keyboardKeyWidth={keyWidth * (notSpacebar ? constants.one : key.length)}
                         keyboardKeySymbolSize={keySymbolSize}
                         disableEffects={disableEffects ? constants.boolTrue : constants.boolFalse}
+                        className={keyClassName}
                     />
                 );
             }
             keyboardRows.push(<div key={rowIndex}>{keyboardRowKeys}</div>);
         }
-        const keyboard: JSX.Element = (
-            <div style={styles}>
-                {inputTextField}
-                <Dialog
-                    open={open}
-                    modal
-                    autoDetectWindowHeight={constants.boolFalse}
-                    contentStyle={dialogContentStyle}>
+        const keyboard: JSX.Element = <div style={styles}>
+            {
+                keyboardOnly ?
+                    <div>
+                        {keyboardRows}
+                    </div> :
+                    <Dialog
+                        open={open}
+                        autoDetectWindowHeight={constants.boolFalse}
+                        contentStyle={dialogContentStyle}
+                    >
+                        {inputTextField}
                         <div>
                             {keyboardTextField}
                             {keyboardRows}
                         </div>
-                </Dialog>
-            </div>
-        );
+                    </Dialog>
+            }
+          </div>
         return muiTheme ? keyboard : <MuiThemeProvider>{keyboard}</MuiThemeProvider>;
-    } 
+    }
 };
 
 export default Keyboard;

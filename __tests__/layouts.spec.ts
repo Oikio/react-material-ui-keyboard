@@ -2,7 +2,7 @@ import {
     alphaNumericKeyboard,
     extendedKeyboard,
     numericKeyboard,
-    kyeboardCapsLockLayout
+    keyboardCapsLockLayout
 } from './../src/layouts';
 
 describe('layots', function () {
@@ -44,7 +44,7 @@ describe('layots', function () {
     describe('kyeboardCapsLockLayout', function () {
         describe('when second argument is true', function () {
              it('will upper case all keyboard layout keys which are not special keys (strings with lengh equal to 1)', function () {
-                expect(kyeboardCapsLockLayout([
+                expect(keyboardCapsLockLayout([
                     ['0', '9'],
                     ['a', 'z'],
                     ['а', 'я'],
@@ -66,7 +66,7 @@ describe('layots', function () {
             });
 
             it('will not upper case keyboard layout keys which are special keys (strings with lengh different from 1)', function () {
-                expect(kyeboardCapsLockLayout([
+                expect(keyboardCapsLockLayout([
                     ['Escape', 'Backspace'],
                     ['Enter', 'Alt'],
                     ['Shift', 'CapsLock'],
@@ -84,7 +84,7 @@ describe('layots', function () {
 
         describe('when second argument is false', function () {
             it('will lower case all keyboard layout keys which are not special keys (strings with lengh equal to 1)', function () {
-                expect(kyeboardCapsLockLayout([
+                expect(keyboardCapsLockLayout([
                     ['0', '9'],
                     ['A', 'Z'],
                     ['А', 'Я'],
@@ -106,7 +106,7 @@ describe('layots', function () {
             });
 
             it('will not lower case keyboard layout keys which are special keys (strings with lengh different from 1)', function () {
-                expect(kyeboardCapsLockLayout([
+                expect(keyboardCapsLockLayout([
                     ['Escape', 'Backspace'],
                     ['Enter', 'Alt'],
                     ['Shift', 'CapsLock'],

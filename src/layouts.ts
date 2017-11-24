@@ -23,10 +23,10 @@ export const numericKeyboard: KeyboardLayout = [
     ['0',      '.',     'Enter']
 ];
 
-export function kyeboardCapsLockLayout(layout: KeyboardLayout, caps: boolean): KeyboardLayout {
+export function keyboardCapsLockLayout(layout: KeyboardLayout, caps: boolean): KeyboardLayout {
     return layout.map((row: Array<string>): Array<string> => {
         return row.map((key: string): string => {
             return (key.length === 1) ? (caps ? key.toUpperCase() : key.toLowerCase()) : key;
-        }); 
+        });
     });
 }
